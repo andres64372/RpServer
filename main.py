@@ -70,7 +70,7 @@ def token():
     if grant_type == 'authorization_code':
         code = data['code'][0]
         user = jwt.decode(code, SECRET, algorithms=["HS256"])
-        access = jwt.encode({"user": user["user"],"exp":datetime.datetime.now() + datetime.timedelta(hours=1)}, SECRET, algorithm="HS256")
+        access = jwt.encode({"user": user["user"],"exp":datetime.datetime.now() + datetime.timedelta(minutes=5)}, SECRET, algorithm="HS256")
         refresh = jwt.encode({"user": user["user"]}, SECRET, algorithm="HS256")
         payload = {
             "token_type": "Bearer",
@@ -82,7 +82,7 @@ def token():
     elif grant_type == 'refresh_token':
         code = data['refresh_token'][0]
         user = jwt.decode(code, SECRET, algorithms=["HS256"])
-        access = jwt.encode({"user": user,"exp":3600*24*30}, SECRET, algorithm="HS256")
+        access = jwt.encode({"user": user["user"],"exp":datetime.datetime.now() + datetime.timedelta(minutes=5)}, SECRET, algorithm="HS256")
         payload = {
             "token_type": "Bearer",
             "access_token": access,
