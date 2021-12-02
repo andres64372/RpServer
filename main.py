@@ -200,5 +200,5 @@ def handle_connect(client, userdata, flags, rc):
     print('connected to brooker')
 
 if __name__ == '__main__':
-    #socketio.run(app)
-    app.run(debug=True,port=80,host='0.0.0.0')
+    socketio.run(app)
+    #app.run(debug=True,port=80,host='0.0.0.0')
