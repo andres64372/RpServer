@@ -4,15 +4,15 @@ def query(body,req_id):
     payload = {}
     for device in body["payload"]["devices"]:
         id = device['id']
-        ref = db.reference(f"Devices/{device['id']}/OnOff")
+        ref = db.reference(f"Devices/{id}/OnOff")
         OnOff = ref.get()["on"]
-        ref = db.reference(f"Devices/{device['id']}/Online")
+        ref = db.reference(f"Devices/{id}/Online")
         Online = ref.get()["online"]
-        ref = db.reference(f"Devices/{device['id']}/ColorSetting")
+        ref = db.reference(f"Devices/{id}/ColorSetting")
         Color = ref.get()["color"]["spectrumRGB"] if ref.get()["color"].get('spectrumRGB') else 16777215
-        if Online == "true":
+        if Online:
             payload[id] = {
-                "on":True if OnOff == "true" else False,
+                "on":OnOff,
                 "online":True,
                 "color":{"spectrumRGB":Color},
                 "status":"SUCCESS"

@@ -11,7 +11,7 @@ def excecute(body,mqtt,req_id):
             id = device['id']
             ref = db.reference(f'Devices/{id}/Online')
             state = ref.get()['online']
-            if state == "true":
+            if state:
                 payload["ids"] = [id]
                 payload["status"] = "SUCCESS"
                 for excecute in excecution:
