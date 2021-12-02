@@ -76,7 +76,7 @@ def token():
             "token_type": "Bearer",
             "access_token": access,
             "refresh_token": refresh,
-            "expires_in": 3600*24*30
+            "expires_in": 5*60
         }
         return jsonify(payload)
     elif grant_type == 'refresh_token':
@@ -86,7 +86,7 @@ def token():
         payload = {
             "token_type": "Bearer",
             "access_token": access,
-            "expires_in": 3600*24*30
+            "expires_in": 5*60
         }
         return jsonify(payload)
     else: return 'Bad request',400
