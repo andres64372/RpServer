@@ -9,13 +9,10 @@ import bcrypt
 import jwt
 import urllib.parse
 import datetime
-import eventlet
 
 from repos.sync import sync
 from repos.query import query
 from repos.excecute import excecute
-
-eventlet.monkey_patch()
 
 app = Flask(__name__)
 
@@ -203,5 +200,5 @@ def handle_connect(client, userdata, flags, rc):
     print('connected to brooker')
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app,debug=True)
     #app.run(debug=True,port=80,host='0.0.0.0')
