@@ -135,7 +135,7 @@ def connected():
             ref.set({'online':True if payload["payload"] == "true" else False})
             socketio.emit(id,{"branch":"Online","id":id,"state":True if payload["payload"] == "true" else False})
             ref = db.reference(f"Devices/{id}/OnOff")
-            OnOff = ref.get()["on"]
+            OnOff = "true" if ref.get()["on"] else "false"
             ref = db.reference(f"Devices/{id}/ColorSetting")
             Color = ref.get()["color"]["spectrumRGB"] if ref.get()["color"]["spectrumRGB"] else 16777215
             mqtt.publish(f"{id}/OnOff",OnOff)
