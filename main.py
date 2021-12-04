@@ -169,7 +169,9 @@ def connected():
 
 @app.route('/devices')
 def devices():
-    user = request.args.get('user')
+    token = request.headers.get('Authorization')[7:]
+    user = jwt.decode(token, SECRET, algorithms=["HS256"])
+    user = user["user"]
     ref = db.reference(f'Users/{user}/devices')
     devices = ref.get()
     if not devices: return jsonify({'list':[],'states':{}})
@@ -193,6 +195,8 @@ def devices():
 
 @app.route('/set')
 def set():
+    token = request.headers.get('Authorization')[7:]
+    user = jwt.decode(token, SECRET, algorithms=["HS256"])
     topic = request.args.get('topic')
     payload = request.args.get('payload')
     id = topic.split('/')[0]
