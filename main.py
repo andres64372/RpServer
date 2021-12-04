@@ -41,7 +41,7 @@ def index():
     password = request.get_json()['password']
     ref = db.reference(f'Users/{user}')
     verify = ref.get()
-    if not verify: return render_template('login.html')
+    if not verify: return jsonify({"status":False}),401
     verify = verify["password"]
     if bcrypt.checkpw(password.encode('utf8'), verify.encode('utf8')):
         code = jwt.encode({"user": user}, SECRET, algorithm="HS256")
