@@ -35,14 +35,25 @@ firebase_admin.initialize_app(cred,{
     'databaseURL': 'https://retropixel-8f415-default-rtdb.firebaseio.com/'
 })
 
-@app.route('/')
+@app.route('/login',methods=['POST'])
 def index():
-    return 'OK'
+    user = request.get_json()['userid']
+    password = request.get_json()['password']
+    ref = db.reference(f'Users/{user}')
+    verify = ref.get()
+    if not verify: return render_template('login.html')
+    verify = verify["password"]
+    if bcrypt.checkpw(password.encode('utf8'), verify.encode('utf8')):
+        code = jwt.encode({"user": user}, SECRET, algorithm="HS256")
+        return jsonify({"status":True,"token":code}),200
+    else:
+        return jsonify({"status":False}),401
 
 @socketio.on('connect')
 def connect():
     print("Client on")
 
+@app.route('/')
 @app.route('/auth',methods=['GET', 'POST'])
 def auth():
     if request.method == 'GET':
