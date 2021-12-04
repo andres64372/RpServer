@@ -44,14 +44,22 @@ def index():
     if not verify: return jsonify({"status":False}),401
     verify = verify["password"]
     if bcrypt.checkpw(password.encode('utf8'), verify.encode('utf8')):
-        code = jwt.encode({"user": user}, SECRET, algorithm="HS256")
-        return jsonify({"status":True,"token":code}),200
+        code = jwt.encode({"user": user,"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
+        refresh = jwt.encode({"username": user}, SECRET, algorithm="HS256")
+        return jsonify({"status":True,"token":code,"refresh":refresh}),200
     else:
         return jsonify({"status":False}),401
 
+@app.route('/refresh',methods=['POST'])
+def refresh():
+    refresh = request.args.get('token')
+    user = jwt.decode(refresh, SECRET, algorithms=["HS256"])["username"]
+    code = jwt.encode({"user": user,"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
+    return jsonify({"status":True,"token":code,"refresh":refresh}),200
+
 @socketio.on('connect')
 def connect():
-    print("Client on")
+    pass
 
 @app.route('/')
 @app.route('/auth',methods=['GET', 'POST'])
