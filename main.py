@@ -135,6 +135,7 @@ def connected():
     if payload["action"] == "client_disconnected":
         ref = db.reference(f"Devices/{payload['clientid']}/Online")
         ref.set({'online':False})
+        socketio.emit(payload['clientid'],{"branch":"Online","id":payload['clientid'],"state":False})
     # if payload["action"] == "client_connected":
     #     r.set(f"{payload['clientid']}/Online","true")
     #     OnOff = r.get(f"{payload['clientid']}/OnOff").decode('utf-8') if r.get(f"{payload['clientid']}/OnOff") else "false"
