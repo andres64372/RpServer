@@ -212,7 +212,7 @@ def set():
         if topic.split('/')[1] == "Color":
             socketio.emit(id,{"branch":"Color","id":id,"state":int(payload)})
             ref = db.reference(f'Devices/{id}/ColorSetting')
-            ref.set({'on':True if payload == "true" else False})
+            ref.set({'color':int(payload)})
     else: 
         socketio.emit(id,{"branch":"Online","id":id,"state":False})
         
