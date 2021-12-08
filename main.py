@@ -119,7 +119,10 @@ def token():
 @app.route('/smarthome',methods=['GET', 'POST'])
 def smarthome():
     token = request.headers.get('Authorization')[7:]
-    user = jwt.decode(token, SECRET, algorithms=["HS256"])
+    try:
+        user = jwt.decode(token, SECRET, algorithms=["HS256"])
+    except:
+        return 'Invalid token',401
     user = user["user"]
     body = request.get_json()
     inputs = body['inputs']
