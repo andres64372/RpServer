@@ -149,8 +149,8 @@ def connected():
     if payload["action"] == "client_connected":
         id = payload['clientid']
         ref = db.reference(f"Devices/{id}/Online")
-        ref.set({'online':True if payload["payload"] == "true" else False})
-        socketio.emit(id,{"branch":"Online","id":id,"state":True if payload["payload"] == "true" else False})
+        ref.set({'online':True})
+        socketio.emit(id,{"branch":"Online","id":id,"state":True})
         ref = db.reference(f"Devices/{id}/OnOff")
         OnOff = "true" if ref.get()["on"] else "false"
         ref = db.reference(f"Devices/{id}/ColorSetting")
