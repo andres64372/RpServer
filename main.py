@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template, redirect
-from flask_mqtt import Mqtt
+# from flask_mqtt import Mqtt
 from flask_cors import CORS
 from flask_socketio import SocketIO
 import firebase_admin
@@ -13,21 +13,22 @@ import datetime
 from repos.sync import sync
 from repos.query import query
 from repos.excecute import excecute
+from repos.mqtt import Mqtt
 
 app = Flask(__name__)
 
-app.config['MQTT_CLIENT_ID'] = 'localhost'
-app.config['MQTT_BROKER_URL'] = 'retropixel.cyou'
-app.config['MQTT_BROKER_PORT'] = 1883
-app.config['MQTT_USERNAME'] = 'admin'
-app.config['MQTT_PASSWORD'] = 'public'
-app.config['MQTT_KEEPALIVE'] = 30
-app.config['MQTT_TLS_ENABLED'] = False
+# app.config['MQTT_CLIENT_ID'] = 'localhost'
+# app.config['MQTT_BROKER_URL'] = 'retropixel.cyou'
+# app.config['MQTT_BROKER_PORT'] = 1883
+# app.config['MQTT_USERNAME'] = 'admin'
+# app.config['MQTT_PASSWORD'] = 'public'
+# app.config['MQTT_KEEPALIVE'] = 30
+# app.config['MQTT_TLS_ENABLED'] = False
 
 SECRET = 'R1BhE53$yt76$RR1hB5YJM'
 
 CORS(app)
-mqtt = Mqtt(app)
+mqtt = Mqtt('http://retropixel.cyou:8081')
 socketio = SocketIO(app, cors_allowed_origins='*')
 
 cred = credentials.Certificate("service-account.json")
@@ -136,14 +137,17 @@ def connected():
         ref = db.reference(f"Devices/{payload['clientid']}/Online")
         ref.set({'online':False})
         socketio.emit(payload['clientid'],{"branch":"Online","id":payload['clientid'],"state":False})
-    # if payload["action"] == "client_connected":
-    #     r.set(f"{payload['clientid']}/Online","true")
-    #     OnOff = r.get(f"{payload['clientid']}/OnOff").decode('utf-8') if r.get(f"{payload['clientid']}/OnOff") else "false"
-    #     Color = r.get(f"{payload['clientid']}/Color").decode('utf-8') if r.get(f"{payload['clientid']}/Color") else 16777215
-    #     mqtt.publish(f"{payload['clientid']}/OnOff",OnOff)
-    #     mqtt.publish(f"{payload['clientid']}/OnOff",Color)
-    #     ref = db.reference(f"Devices/{payload['clientid']}/Online")
-    #     ref.set({'online':True})
+    if payload["action"] == "client_connected":
+        id = payload['clientid']
+        ref = db.reference(f"Devices/{id}/Online")
+        ref.set({'online':True if payload["payload"] == "true" else False})
+        socketio.emit(id,{"branch":"Online","id":id,"state":True if payload["payload"] == "true" else False})
+        ref = db.reference(f"Devices/{id}/OnOff")
+        OnOff = "true" if ref.get()["on"] else "false"
+        ref = db.reference(f"Devices/{id}/ColorSetting")
+        Color = ref.get()["color"]["spectrumRGB"] if ref.get()["color"]["spectrumRGB"] else 16777215
+        mqtt.publish(f"{id}/OnOff",OnOff)
+        mqtt.publish(f"{id}/Color",Color)
     if payload["action"] == "message_publish":
         if payload["topic"].split('/')[1] == "Ping":
             id = payload['topic'].split('/')[0]
@@ -219,9 +223,9 @@ def set():
         
     return jsonify({topic:payload}),200
 
-@mqtt.on_connect()
-def handle_connect(client, userdata, flags, rc):
-    print('connected to brooker')
+# @mqtt.on_connect()
+# def handle_connect(client, userdata, flags, rc):
+#     print('connected to brooker')
 
 if __name__ == '__main__':
     socketio.run(app,debug=True)
