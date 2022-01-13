@@ -89,24 +89,30 @@ def token():
     grant_type = data['grant_type'][0]
     if grant_type == 'authorization_code':
         code = data['code'][0]
-        user = jwt.decode(code, SECRET, algorithms=["HS256"])
+        try:
+            user = jwt.decode(code, SECRET, algorithms=["HS256"])
+        except:
+            return 'Invalid token',401
         access = jwt.encode({"user": user["user"],"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
         refresh = jwt.encode({"user": user["user"]}, SECRET, algorithm="HS256")
         payload = {
             "token_type": "Bearer",
             "access_token": access,
             "refresh_token": refresh,
-            "expires_in": 24*60*3600
+            "expires_in": 24*3600
         }
         return jsonify(payload)
     elif grant_type == 'refresh_token':
         code = data['refresh_token'][0]
-        user = jwt.decode(code, SECRET, algorithms=["HS256"])
+        try:
+            user = jwt.decode(code, SECRET, algorithms=["HS256"])
+        except:
+            return 'Invalid token',401
         access = jwt.encode({"user": user["user"],"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
         payload = {
             "token_type": "Bearer",
             "access_token": access,
-            "expires_in": 24*60*3600
+            "expires_in": 24*3600
         }
         return jsonify(payload)
     else: return 'Bad request',400
@@ -114,7 +120,10 @@ def token():
 @app.route('/smarthome',methods=['GET', 'POST'])
 def smarthome():
     token = request.headers.get('Authorization')[7:]
-    user = jwt.decode(token, SECRET, algorithms=["HS256"])
+    try:
+        user = jwt.decode(token, SECRET, algorithms=["HS256"])
+    except:
+        return 'Invalid token',401
     user = user["user"]
     body = request.get_json()
     inputs = body['inputs']
