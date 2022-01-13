@@ -1,6 +1,10 @@
 from firebase_admin import db
 
-def excecute(body,mqtt,req_id):
+from repos.mqtt import Mqtt
+
+mqtt = Mqtt('http://retropixel.cyou:8081')
+
+def excecute(body,req_id):
     commands = body['payload']['commands']
     Payload = []
     for command in commands:

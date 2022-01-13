@@ -136,7 +136,7 @@ def smarthome():
             data = query(i,id)
             return jsonify(data)
         if i["intent"] == "action.devices.EXECUTE":
-            data = excecute(i,mqtt,id)
+            data = excecute(i,id)
             return jsonify(data)
 
 @app.route('/connected',methods=['POST'])
