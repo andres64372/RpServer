@@ -218,7 +218,6 @@ def set():
     Online = ref.get()
     #Online = r.get(f"{id}/Online").decode('utf-8') if r.get(f"{id}/Online") else "true"
     if Online:
-        mqtt.publish(topic,payload)
         if topic.split('/')[1] == "OnOff":
             socketio.emit(id,{"branch":"OnOff","id":id,"state":True if payload == "true" else False})
             ref = db.reference(f'Devices/{id}/OnOff')
@@ -227,6 +226,7 @@ def set():
             socketio.emit(id,{"branch":"Color","id":id,"state":int(payload)})
             ref = db.reference(f'Devices/{id}/ColorSetting')
             ref.set({'color':{"spectrumRGB":int(payload)}})
+        mqtt.publish(topic,payload)
     else: 
         socketio.emit(id,{"branch":"Online","id":id,"state":False})
         
