@@ -28,10 +28,10 @@ app = Flask(__name__)
 SECRET = 'R1BhE53$yt76$RR1hB5YJM'
 
 CORS(app)
-mqtt = Mqtt('http://retropixel.cyou:8081')
+mqtt = Mqtt('http://localhost:8081')
 socketio = SocketIO(app, cors_allowed_origins='*')
 
-cred = credentials.Certificate("service-account.json")
+cred = credentials.Certificate("var/www/RetroPixel/service-account.json")
 firebase_admin.initialize_app(cred,{
     'databaseURL': 'https://retropixel-8f415-default-rtdb.firebaseio.com/'
 })
