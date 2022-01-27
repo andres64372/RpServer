@@ -9,7 +9,9 @@ import bcrypt
 import jwt
 import urllib.parse
 import datetime
+import os
 
+from conf import settings
 from repos.sync import sync
 from repos.query import query
 from repos.excecute import excecute
@@ -31,7 +33,7 @@ CORS(app)
 mqtt = Mqtt('http://localhost:8081')
 socketio = SocketIO(app, cors_allowed_origins='*')
 
-cred = credentials.Certificate("var/www/RetroPixel/service-account.json")
+cred = credentials.Certificate(os.path.join(settings.BASE_DIR,"service-account.json"))
 firebase_admin.initialize_app(cred,{
     'databaseURL': 'https://retropixel-8f415-default-rtdb.firebaseio.com/'
 })
