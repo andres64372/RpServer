@@ -67,13 +67,16 @@ def connect():
 
 @app.route('/deploy',methods=['POST'])
 def deploy():
-    def update():
-        os.chdir(settings.BASE_DIR)
+    def update_backend():
+        os.chdir('home/admin/RpServer/app')
+        os.system("sudo bash -i restart.sh")
+    def update_frontend():
+        os.chdir('home/admin/RpApp')
         os.system("sudo bash -i restart.sh")
     data = request.get_json()
     try:
         if data["repository"]["default_branch"] == "main":
-            thread = threading.Thread(target=update)
+            thread = threading.Thread(target=update_backend)
             thread.start()
         return ' ',200
     except:
