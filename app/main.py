@@ -70,10 +70,13 @@ def deploy():
     def update():
         os.system("source restart.sh")
     data = request.json()
-    if data["repository"]["default_branch"]:
-        thread = threading.Thread(target=update)
-        thread.start()
-    return ' ',200
+    try:
+        if data["repository"]["default_branch"] == "main":
+            thread = threading.Thread(target=update)
+            thread.start()
+        return ' ',200
+    except:
+        return ' ',404
 
 @app.route('/')
 @app.route('/auth',methods=['GET', 'POST'])
