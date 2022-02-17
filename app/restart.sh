@@ -1,6 +1,6 @@
 #!/bin/sh
 
-
+cd /home/admin/RpServer/app
 source venv/bin/activate
 git pull origin main
 sudo pkill gunicorn
