@@ -65,7 +65,7 @@ def refresh():
 def connect():
     pass
 
-@app.route('/deploy')
+@app.route('/deploy',methods=['POST'])
 def deploy():
     def update():
         os.system("source restart.sh")
