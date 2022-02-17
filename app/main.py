@@ -64,6 +64,13 @@ def refresh():
 def connect():
     pass
 
+@app.route('/deploy')
+def deploy():
+    data = request.json()
+    if data["repository"]["default_branch"]:
+        os.system("source restart.sh")
+    return ' ',200
+
 @app.route('/')
 @app.route('/auth',methods=['GET', 'POST'])
 def auth():

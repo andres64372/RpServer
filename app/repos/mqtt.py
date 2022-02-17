@@ -4,7 +4,7 @@ class Mqtt:
     def __init__(self,url):
         self.url = url
     def publish(self,topic,payload):
-        requests.post(f"{self.url}/api/v4/mqtt/publish",
+        response = requests.post(f"{self.url}/api/v4/mqtt/publish",
             auth=("admin","public"),
             json={
                 "topic":topic,
@@ -12,3 +12,4 @@ class Mqtt:
                 "clientid":"admin"
             }
         )
+        return response
