@@ -10,6 +10,7 @@ import jwt
 import urllib.parse
 import datetime
 import os
+import threading
 
 from conf import settings
 from repos.sync import sync
@@ -66,9 +67,12 @@ def connect():
 
 @app.route('/deploy')
 def deploy():
+    def update():
+        os.system("source restart.sh")
     data = request.json()
     if data["repository"]["default_branch"]:
-        os.system("source restart.sh")
+        thread = threading.Thread(target=update)
+        thread.start()
     return ' ',200
 
 @app.route('/')
