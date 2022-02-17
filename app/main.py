@@ -68,7 +68,7 @@ def connect():
 @app.route('/deploy',methods=['POST'])
 def deploy():
     def update():
-        os.system("source restart.sh")
+        os.system("restart.sh")
     data = request.get_json()
     try:
         if data["repository"]["default_branch"] == "main":
