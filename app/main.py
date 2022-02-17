@@ -68,10 +68,10 @@ def connect():
 @app.route('/deploy',methods=['POST'])
 def deploy():
     def update_backend():
-        os.chdir('home/admin/RpServer/app')
+        os.chdir('/home/admin/RpServer/app')
         os.system("sudo bash -i restart.sh")
     def update_frontend():
-        os.chdir('home/admin/RpApp')
+        os.chdir('/home/admin/RpApp')
         os.system("sudo bash -i restart.sh")
     data = request.get_json()
     try:
