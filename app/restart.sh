@@ -1,7 +1,7 @@
 #!/bin/sh
 
 sudo service nginx restart
-cd /home/home/admin/RpServer/app
+cd /home/admin/RpServer/app
 source venv/bin/activate
 git pull origin main
 sudo pkill gunicorn
