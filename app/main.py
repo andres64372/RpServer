@@ -69,7 +69,7 @@ def connect():
 def deploy():
     def update():
         os.system("source restart.sh")
-    data = request.json()
+    data = request.get_json()
     try:
         if data["repository"]["default_branch"] == "main":
             thread = threading.Thread(target=update)
