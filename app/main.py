@@ -83,6 +83,9 @@ def deploy():
         return ' ',404
 
 @app.route('/')
+def index():
+    return redirect('https://retropixel.cyou')
+
 @app.route('/auth',methods=['GET', 'POST'])
 def auth():
     if request.method == 'GET':
