@@ -239,6 +239,7 @@ def set():
         mqtt.publish(topic,payload)
     else: 
         socketio.emit(id,{"branch":"Online","id":id,"state":False})
+        socketio.emit(id,{"branch":"OnOff","id":id,"state":False})
         
     return jsonify({topic:payload}),200
 
