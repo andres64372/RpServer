@@ -171,16 +171,12 @@ def connected():
         ref.set({'online':True})
         socketio.emit(payload['clientid'],{"branch":"Online","id":payload['clientid'],"state":True})
     if payload["action"] == "message_publish":
-        # if payload["topic"].split('/')[1] == "Ping":
-        #     id = payload['topic'].split('/')[0]
-        #     ref = db.reference(f"Devices/{id}/Online")
-        #     ref.set({'online':True})
         if payload["topic"].split('/')[1] == "Online":
             id = payload['topic'].split('/')[0]
-            ref = db.reference(f"Devices/{id}/OnOff")
-            OnOff = "true" if ref.get()["on"] else "false"
-            ref = db.reference(f"Devices/{id}/ColorSetting")
-            Color = ref.get()["color"]["spectrumRGB"] if ref.get()["color"]["spectrumRGB"] else 16777215
+            ref = db.reference(f"Devices/{id}")
+            data = ref.get()
+            OnOff = "true" if data["OnOff"]["on"] else "false"
+            Color = data["ColorSetting"]["color"]["spectrumRGB"] if data["ColorSetting"]["color"].get("spectrumRGB") else 16777215
             mqtt.publish(f"{id}/OnOff",OnOff)
             mqtt.publish(f"{id}/Color",Color)
         if payload["topic"].split('/')[1] == "OnOff":
@@ -189,7 +185,7 @@ def connected():
         if payload["topic"].split('/')[1] == "Color":
             id = payload['topic'].split('/')[0]
             socketio.emit(id,{"branch":"Color","id":id,"state":int(payload["payload"])})
-    return 'OK',200
+    return ' ',200
 
 @app.route('/devices')
 def devices():
