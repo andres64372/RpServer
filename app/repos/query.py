@@ -9,7 +9,10 @@ def query(body,req_id):
         OnOff = data["OnOff"]["on"]
         Online = data["Online"]["online"]
         Color = data["ColorSetting"]["color"]
-        Color = Color["spectrumRGB"] if Color.get('spectrumRGB') else 16777215
+        if Color.get('spectrumRGB'):
+            Color = {"spectrumRGB": Color.get('spectrumRGB')}
+        else:
+            Color = {"temperature": Color.get('temperature')}
         # id = device['id']
         # ref = db.reference(f"Devices/{id}/OnOff")
         # OnOff = ref.get()["on"]
@@ -21,7 +24,7 @@ def query(body,req_id):
             payload[id] = {
                 "on":OnOff,
                 "online":True,
-                "color":{"spectrumRGB":Color},
+                "color":Color,
                 "status":"SUCCESS"
             }
         else: 
