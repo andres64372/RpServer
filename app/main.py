@@ -40,7 +40,7 @@ firebase_admin.initialize_app(cred,{
 })
 
 @app.route('/login',methods=['POST'])
-def index():
+def login():
     user = request.get_json()['userid']
     password = request.get_json()['password']
     ref = db.reference(f'Users/{user}')
