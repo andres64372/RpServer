@@ -207,7 +207,7 @@ def devices():
         data = ref.get()
         OnOff = data['OnOff']["on"]
         Online = data['Online']["online"]
-        Color = ref["ColorSetting"]["color"]["spectrumRGB"] if ref["ColorSetting"]["color"].get('spectrumRGB') else 16777215
+        Color = data["ColorSetting"]["color"]["spectrumRGB"] if data["ColorSetting"]["color"].get('spectrumRGB') else 16777215
         device_states.update({device["id"]:{
             "name": device["nickname"],
             "OnOff":OnOff,
