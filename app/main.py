@@ -203,12 +203,11 @@ def devices():
     device_states = {}
     for device in devices:
         device_list.append(device["id"])
-        ref = db.reference(f"Devices/{device['id']}/OnOff")
-        OnOff = ref.get()["on"]
-        ref = db.reference(f"Devices/{device['id']}/Online")
-        Online = ref.get()["online"]
-        ref = db.reference(f"Devices/{device['id']}/ColorSetting")
-        Color = ref.get()["color"]["spectrumRGB"] if ref.get()["color"].get('spectrumRGB') else 16777215
+        ref = db.reference(f'Devices/{device["id"]}')
+        data = ref.get()
+        OnOff = data['OnOff']["on"]
+        Online = data['Online']["online"]
+        Color = ref["ColorSetting"]["color"]["spectrumRGB"] if ref["ColorSetting"]["color"].get('spectrumRGB') else 16777215
         device_states.update({device["id"]:{
             "name": device["nickname"],
             "OnOff":OnOff,
