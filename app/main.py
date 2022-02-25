@@ -118,6 +118,7 @@ def auth():
         state = request.args.get('state')
         ref = db.reference(f'Users')
         snapshot = ref.order_by_child('email').equal_to(user).get()
+        verify = None
         for key, val in snapshot.items():
             verify = val
             id = key
