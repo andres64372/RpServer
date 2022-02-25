@@ -91,9 +91,9 @@ def deploy():
         os.system("sudo bash -i restart.sh")
     data = request.get_json()
     try:
-        if data["repository"]["default_branch"] == "main":
-            thread = threading.Thread(target=update_backend)
-            thread.start()
+        # if data["repository"]["default_branch"] == "main":
+        #     thread = threading.Thread(target=update_backend)
+        #     thread.start()
         return ' ',200
     except:
         return ' ',404
