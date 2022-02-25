@@ -50,11 +50,12 @@ def login():
     snapshot = ref.order_by_child('email').equal_to(user).get()
     for key, val in snapshot.items():
         verify = val
+        id = key
     if not verify: return jsonify({"status":False}),401
     verify = verify["password"]
     if bcrypt.checkpw(password.encode('utf8'), verify.encode('utf8')):
-        code = jwt.encode({"user": user,"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
-        refresh = jwt.encode({"username": verify}, SECRET, algorithm="HS256")
+        code = jwt.encode({"token_type": "access","user": id,"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
+        refresh = jwt.encode({"token_type": "refresh","username": id}, SECRET, algorithm="HS256")
         return jsonify({"status":True,"token":code,"refresh":refresh}),200
     else:
         return jsonify({"status":False}),401
