@@ -12,6 +12,7 @@ import datetime
 import os
 import threading
 from secrets import token_hex
+import time
 
 from conf import settings
 from repos.sync import sync
@@ -84,6 +85,7 @@ def connect():
 @app.route('/deploy',methods=['POST'])
 def deploy():
     def update_backend():
+        time.sleep(2)
         os.chdir('/home/admin/RpServer/app')
         os.system("sudo bash -i restart.sh")
     def update_frontend():
