@@ -11,6 +11,7 @@ import urllib.parse
 import datetime
 import os
 import threading
+from secrets import token_hex
 
 from conf import settings
 from repos.sync import sync
@@ -41,10 +42,13 @@ firebase_admin.initialize_app(cred,{
 
 @app.route('/login',methods=['POST'])
 def login():
+    verify = {}
     user = request.get_json()['userid']
     password = request.get_json()['password']
-    ref = db.reference(f'Users/{user}')
-    verify = ref.get()
+    ref = db.reference(f'Users')
+    snapshot = ref.order_by_child('email').equal_to(user).get()
+    for key, val in snapshot.items():
+        verify = val
     if not verify: return jsonify({"status":False}),401
     verify = verify["password"]
     if bcrypt.checkpw(password.encode('utf8'), verify.encode('utf8')):
@@ -53,6 +57,18 @@ def login():
         return jsonify({"status":True,"token":code,"refresh":refresh}),200
     else:
         return jsonify({"status":False}),401
+
+@app.route('/register', methods=['POST'])
+def register():
+    name = request.get_json()["name"]
+    last = request.get_json()["last"]
+    email = request.get_json()["email"]
+    password = bcrypt.hashpw(request.get_json()["password"].encode('utf8'),bcrypt.gensalt()).decode('utf8')
+    data = {"devices":[],"name":name,"last":last,"email":email,"password":password,"active":False}
+    ref = db.reference('Users')
+    id = str(int(datetime.datetime.timestamp(datetime.datetime.now())))+token_hex(8)
+    ref.child(id).set(data)
+    return ' ',201
 
 @app.route('/refresh',methods=['POST'])
 def refresh():
