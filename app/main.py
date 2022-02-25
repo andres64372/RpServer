@@ -116,12 +116,15 @@ def auth():
         password = request.form.get('password')
         url = request.args.get('redirect_uri')
         state = request.args.get('state')
-        ref = db.reference(f'Users/{user}')
-        verify = ref.get()
+        ref = db.reference(f'Users')
+        snapshot = ref.order_by_child('email').equal_to(user).get()
+        for key, val in snapshot.items():
+            verify = val
+            id = key
         if not verify: return render_template('login.html',state=state,url=url)
         verify = verify["password"]
         if bcrypt.checkpw(password.encode('utf8'), verify.encode('utf8')):
-            code = jwt.encode({"user": user}, SECRET, algorithm="HS256")
+            code = jwt.encode({"user": id}, SECRET, algorithm="HS256")
             return redirect(f'{url}?code={code}&state={state}')
         else:
             return render_template('login.html',state=state,url=url)
