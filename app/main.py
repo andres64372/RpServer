@@ -53,7 +53,7 @@ def login():
     verify = verify["password"]
     if bcrypt.checkpw(password.encode('utf8'), verify.encode('utf8')):
         code = jwt.encode({"user": user,"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
-        refresh = jwt.encode({"username": user}, SECRET, algorithm="HS256")
+        refresh = jwt.encode({"username": verify}, SECRET, algorithm="HS256")
         return jsonify({"status":True,"token":code,"refresh":refresh}),200
     else:
         return jsonify({"status":False}),401
