@@ -218,6 +218,7 @@ def devices():
     user = user["user"]
     ref = db.reference(f'Users/{user}/devices')
     devices = ref.get()
+    print(devices)
     if not devices: return jsonify({'list':[],'states':{}})
     device_list = []
     device_states = {}
