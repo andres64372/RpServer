@@ -44,7 +44,7 @@ firebase_admin.initialize_app(cred,{
 @app.route('/login',methods=['POST'])
 def login():
     verify = {}
-    user = request.get_json()['userid']
+    user = request.get_json()['userid'].replace(' ','')
     password = request.get_json()['password']
     ref = db.reference(f'Users')
     snapshot = ref.order_by_child('email').equal_to(user).get()
