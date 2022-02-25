@@ -93,7 +93,7 @@ def deploy():
     try:
         if data["repository"]["default_branch"] == "main":
             thread = threading.Thread(target=update_backend)
-            #thread.start()
+            thread.start()
             return ' ',200
     except:
         return ' ',404
