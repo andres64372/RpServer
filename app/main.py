@@ -55,7 +55,7 @@ def login():
     verify = verify["password"]
     if bcrypt.checkpw(password.encode('utf8'), verify.encode('utf8')):
         code = jwt.encode({"token_type": "access","user": id,"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
-        refresh = jwt.encode({"token_type": "refresh","username": id}, SECRET, algorithm="HS256")
+        refresh = jwt.encode({"token_type": "refresh","user": id}, SECRET, algorithm="HS256")
         return jsonify({"status":True,"token":code,"refresh":refresh}),200
     else:
         return jsonify({"status":False}),401
@@ -75,8 +75,10 @@ def register():
 @app.route('/refresh',methods=['POST'])
 def refresh():
     refresh = request.args.get('token')
-    user = jwt.decode(refresh, SECRET, algorithms=["HS256"])["username"]
-    code = jwt.encode({"user": user,"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
+    token = jwt.decode(refresh, SECRET, algorithms=["HS256"])
+    if token["token_type"] != "refresh": return ' ',400
+    user = token["user"]
+    code = jwt.encode({"token_type": "access","user": user,"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
     return jsonify({"status":True,"token":code,"refresh":refresh}),200
 
 @socketio.on('connect')
