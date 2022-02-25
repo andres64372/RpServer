@@ -92,8 +92,8 @@ def deploy():
     data = request.get_json()
     try:
         if data["repository"]["default_branch"] == "main":
-        #     thread = threading.Thread(target=update_backend)
-        #     thread.start()
+            thread = threading.Thread(target=update_backend)
+            #thread.start()
             return ' ',200
     except:
         return ' ',404
