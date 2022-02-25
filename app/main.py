@@ -85,7 +85,6 @@ def connect():
 @app.route('/deploy',methods=['POST'])
 def deploy():
     def update_backend():
-        
         time.sleep(2)
         os.chdir('/home/admin/RpServer/app')
         os.system("sudo bash -i restart.sh")
