@@ -20,7 +20,7 @@ def excecute(body,req_id):
                 payload["status"] = "SUCCESS"
                 for excecute in excecution:
                     payload["states"] = excecute["params"]
-                    #payload["states"]["online"] = True
+                    payload["states"]["online"] = True
                     if excecute["command"] == "action.devices.commands.OnOff":
                         mqtt.publish(f"{id}/OnOff","true" if excecute["params"]["on"] else "false")
                         ref = db.reference(f'Devices/{id}/OnOff')
