@@ -179,12 +179,15 @@ def smarthome():
     for i in inputs:
         if i["intent"] == "action.devices.SYNC":
             data = sync(user,i,id)
+            print(data)
             return jsonify(data)
         if i["intent"] == "action.devices.QUERY":
             data = query(i,id)
+            print(data)
             return jsonify(data)
         if i["intent"] == "action.devices.EXECUTE":
             data = excecute(i,id)
+            print(data)
             return jsonify(data)
 
 @app.route('/connected',methods=['POST'])
