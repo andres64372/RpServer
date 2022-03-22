@@ -229,15 +229,30 @@ def devices():
         device_list.append(device["id"])
         ref = db.reference(f'Devices/{device["id"]}')
         data = ref.get()
-        OnOff = data['OnOff']["on"]
-        Online = data['Online']["online"]
-        Color = data["ColorSetting"]["color"]["spectrumRGB"] if data["ColorSetting"]["color"].get('spectrumRGB') else 16777215
-        device_states.update({device["id"]:{
-            "name": device["nickname"],
-            "OnOff":OnOff,
-            "Online":Online,
-            "Color":int(Color)
-        }})
+        if not data:
+            ref.set(
+                {
+                    "ColorSetting":{"color":{"spectrumRGB":16777215}},
+                    "OnOff":{"on":False},
+                    "Online":{"online":True},
+                }
+            )
+            device_states.update({device["id"]:{
+                "name": device["nickname"],
+                "OnOff":False,
+                "Online":True,
+                "Color":16777215
+            }})
+        else:
+            OnOff = data['OnOff']["on"]
+            Online = data['Online']["online"]
+            Color = data["ColorSetting"]["color"]["spectrumRGB"] if data["ColorSetting"]["color"].get('spectrumRGB') else 16777215
+            device_states.update({device["id"]:{
+                "name": device["nickname"],
+                "OnOff":OnOff,
+                "Online":Online,
+                "Color":int(Color)
+            }})
     return jsonify({'list':device_list,'states':device_states})
 
 @app.route('/set')
