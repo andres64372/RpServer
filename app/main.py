@@ -240,7 +240,7 @@ def devices():
             device_states.update({device["id"]:{
                 "name": device["nickname"],
                 "OnOff":False,
-                "Online":True,
+                "Online":False,
                 "Color":16777215
             }})
         else:
