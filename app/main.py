@@ -234,7 +234,7 @@ def devices():
                 {
                     "ColorSetting":{"color":{"spectrumRGB":16777215}},
                     "OnOff":{"on":False},
-                    "Online":{"online":True},
+                    "Online":{"online":False},
                 }
             )
             device_states.update({device["id"]:{
