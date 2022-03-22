@@ -194,7 +194,7 @@ def connected():
         ref = db.reference(f"Devices/{payload['clientid']}/Online")
         ref.set({'online':False})
         socketio.emit(payload['clientid'],{"branch":"Online","id":payload['clientid'],"state":False})
-    if payload["action"] == "client_connected":
+    if payload["action"] == "client_connected" and payload['clientid'].startswith("LIGHT"):
         ref = db.reference(f"Devices/{payload['clientid']}/Online")
         ref.set({'online':True})
         socketio.emit(payload['clientid'],{"branch":"Online","id":payload['clientid'],"state":True})
