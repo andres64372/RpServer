@@ -190,7 +190,7 @@ def smarthome():
 @app.route('/connected',methods=['POST'])
 def connected():
     payload = request.get_json()
-    if payload["action"] == "client_disconnected and payload['clientid'].startswith("LIGHT"):
+    if payload["action"] == "client_disconnected" and payload['clientid'].startswith("LIGHT"):
         ref = db.reference(f"Devices/{payload['clientid']}/Online")
         ref.set({'online':False})
         socketio.emit(payload['clientid'],{"branch":"Online","id":payload['clientid'],"state":False})
