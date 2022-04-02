@@ -71,7 +71,22 @@ def register():
     ref = db.reference('Users')
     id = str(int(datetime.datetime.timestamp(datetime.datetime.now())))+token_hex(8)
     ref.child(id).set(data)
+    token = jwt.encode({"email": email,"exp":datetime.datetime.now() + datetime.timedelta(minutes=15)}, SECRET, algorithm="HS256")
     return ' ',201
+
+@app.route('/activate')
+def active():
+    try:
+        token = request.args.get('token')
+    except:
+        return ' ',404
+    ref = db.reference(f'Users')
+    snapshot = ref.order_by_child('email').equal_to(token["email"]).get()
+    for key, val in snapshot.items():
+        id = key
+    ref = db.reference(f"Users/{id}")
+    ref.set({'active':True})
+    return redirect("https://retropixel.cyou", code=302)
 
 @app.route('/refresh',methods=['POST'])
 def refresh():
