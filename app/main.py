@@ -171,6 +171,7 @@ def smarthome():
     token = request.headers.get('Authorization')[7:]
     try:
         user = jwt.decode(token, SECRET, algorithms=["HS256"])
+        if user["token_type"] != "access": return 'Invalid token',401
     except:
         return 'Invalid token',401
     user = user["user"]
@@ -260,6 +261,7 @@ def devices():
 def set():
     token = request.headers.get('Authorization')[7:]
     user = jwt.decode(token, SECRET, algorithms=["HS256"])
+    if user["token_type"] != "access": return 'Invalid token',401
     topic = request.args.get('topic')
     payload = request.args.get('payload')
     id = topic.split('/')[0]
