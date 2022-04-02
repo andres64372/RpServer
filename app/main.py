@@ -52,6 +52,7 @@ def login():
         verify = val
         id = key
     if not verify: return jsonify({"status":False}),401
+    if not verify["active"]:  return jsonify({"status":False}),401
     verify = verify["password"]
     if bcrypt.checkpw(password.encode('utf8'), verify.encode('utf8')):
         code = jwt.encode({"token_type": "access","user": id,"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
