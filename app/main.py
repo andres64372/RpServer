@@ -157,8 +157,8 @@ def token():
             user = jwt.decode(code, SECRET, algorithms=["HS256"])
         except:
             return 'Invalid token',401
-        access = jwt.encode({"user": user["user"],"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
-        refresh = jwt.encode({"user": user["user"]}, SECRET, algorithm="HS256")
+        access = jwt.encode({"type":"access","user": user["user"],"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
+        refresh = jwt.encode({"type":"refresh","user": user["user"]}, SECRET, algorithm="HS256")
         payload = {
             "token_type": "Bearer",
             "access_token": access,
@@ -172,7 +172,7 @@ def token():
             user = jwt.decode(code, SECRET, algorithms=["HS256"])
         except:
             return 'Invalid token',401
-        access = jwt.encode({"user": user["user"],"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
+        access = jwt.encode({"type":"access","user": user["user"],"exp":datetime.datetime.now() + datetime.timedelta(hours=24)}, SECRET, algorithm="HS256")
         payload = {
             "token_type": "Bearer",
             "access_token": access,
@@ -186,7 +186,7 @@ def smarthome():
     token = request.headers.get('Authorization')[7:]
     try:
         user = jwt.decode(token, SECRET, algorithms=["HS256"])
-        if user["token_type"] != "access": return 'Invalid token',401
+        if user["type"] != "access": return 'Invalid token',401
     except:
         return 'Invalid token',401
     user = user["user"]
