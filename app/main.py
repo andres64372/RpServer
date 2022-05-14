@@ -280,23 +280,20 @@ def set():
     topic = request.args.get('topic')
     payload = request.args.get('payload')
     id = topic.split('/')[0]
+    if topic.split('/')[1] == "OnOff":
+        socketio.emit(id,{"branch":"OnOff","id":id,"state":True if payload == "true" else False})
+        ref = db.reference(f'Devices/{id}/OnOff')
+        ref.set({'on':True if payload == "true" else False})
+    if topic.split('/')[1] == "Color":
+        socketio.emit(id,{"branch":"Color","id":id,"state":int(payload)})
+        ref = db.reference(f'Devices/{id}/ColorSetting')
+        ref.set({'color':{"spectrumRGB":int(payload)}})
+    mqtt.publish(topic,payload)
     ref = db.reference(f'Devices/{id}')
     Online = ref.get()
-    #Online = r.get(f"{id}/Online").decode('utf-8') if r.get(f"{id}/Online") else "true"
-    if Online:
-        if topic.split('/')[1] == "OnOff":
-            socketio.emit(id,{"branch":"OnOff","id":id,"state":True if payload == "true" else False})
-            ref = db.reference(f'Devices/{id}/OnOff')
-            ref.set({'on':True if payload == "true" else False})
-        if topic.split('/')[1] == "Color":
-            socketio.emit(id,{"branch":"Color","id":id,"state":int(payload)})
-            ref = db.reference(f'Devices/{id}/ColorSetting')
-            ref.set({'color':{"spectrumRGB":int(payload)}})
-        mqtt.publish(topic,payload)
-    else: 
+    if not Online:
         socketio.emit(id,{"branch":"Online","id":id,"state":False})
         socketio.emit(id,{"branch":"OnOff","id":id,"state":False})
-        
     return jsonify({topic:payload}),200
 
 # @mqtt.on_connect()
