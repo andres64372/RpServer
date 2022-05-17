@@ -2,7 +2,7 @@ from firebase_admin import db
 
 from repos.mqtt import Mqtt
 
-mqtt = Mqtt('http://retropixel.cyou:8081')
+mqtt = Mqtt('a324s852z2w8jk-ats.iot.us-east-1.amazonaws.com')
 
 def excecute(body,req_id):
     commands = body['payload']['commands']

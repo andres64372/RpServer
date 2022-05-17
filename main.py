@@ -33,7 +33,7 @@ app = Flask(__name__)
 SECRET = 'R1BhE53$yt76$RR1hB5YJM'
 
 CORS(app)
-mqtt = Mqtt('http://localhost:8081')
+mqtt = Mqtt('a324s852z2w8jk-ats.iot.us-east-1.amazonaws.com')
 socketio = SocketIO(app, cors_allowed_origins='*')
 
 cred = credentials.Certificate(os.path.join(settings.BASE_DIR,"service-account.json"))
@@ -207,15 +207,21 @@ def smarthome():
 @app.route('/connected',methods=['POST'])
 def connected():
     payload = request.get_json()
-    if payload["action"] == "client_disconnected" and payload['clientid'].startswith("LIGHT"):
-        ref = db.reference(f"Devices/{payload['clientid']}/Online")
-        ref.set({'online':False})
-        socketio.emit(payload['clientid'],{"branch":"Online","id":payload['clientid'],"state":False})
-    if payload["action"] == "client_connected" and payload['clientid'].startswith("LIGHT"):
-        ref = db.reference(f"Devices/{payload['clientid']}/Online")
-        ref.set({'online':True})
-        socketio.emit(payload['clientid'],{"branch":"Online","id":payload['clientid'],"state":True})
-    if payload["action"] == "message_publish":
+    if payload["eventType"] == "disconnected" and payload['clientId'].startswith("LIGHT"):
+        ref = db.reference(f"Fisical/{payload['clientId']}")
+        device_list = ref.get()
+        for device in device_list:
+            ref = db.reference(f"Devices/{device}/Online")
+            ref.set({'online':False})
+            socketio.emit(device,{"branch":"Online","id":device,"state":False})
+    if payload["eventType"] == "connected" and payload['clientId'].startswith("LIGHT"):
+        ref = db.reference(f"Fisical/{payload['clientId']}")
+        device_list = ref.get()
+        for device in device_list:
+            ref = db.reference(f"Devices/{device}/Online")
+            ref.set({'online':True})
+            socketio.emit(device,{"branch":"Online","id":device,"state":True})
+    if payload["eventType"] == "publish":
         if payload["topic"].split('/')[1] == "Online":
             id = payload['topic'].split('/')[0]
             ref = db.reference(f"Devices/{id}")
